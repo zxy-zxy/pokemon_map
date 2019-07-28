@@ -9,11 +9,31 @@ def pokemon_directory_path(instance, filename):
 
 
 class Pokemon(models.Model):
-    title_ru = models.CharField(max_length=200)
-    title_en = models.CharField(max_length=200, blank=True, null=True)
-    title_jp = models.CharField(max_length=200, blank=True, null=True)
+    title_ru = models.CharField(max_length=200, verbose_name='Заголовок на русском')
+    title_en = models.CharField(
+        max_length=200, blank=True, null=True, verbose_name='Заголовок на английском'
+    )
+    title_jp = models.CharField(
+        max_length=200, blank=True, null=True, verbose_name='Заголовок на японском'
+    )
     image = models.ImageField(blank=True, null=True, upload_to=pokemon_directory_path)
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True, verbose_name='Описание')
+    previous_evolution = models.ForeignKey(
+        'self',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name='pokemon_previous_evolution',
+        verbose_name='Из кого эволюционировал',
+    )
+    next_evolution = models.ForeignKey(
+        'self',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name='pokemon_next_evolution',
+        verbose_name='В кого эволюционирует',
+    )
 
     def __str__(self):
         return 'Title: {}'.format(self.title_ru)
@@ -24,26 +44,44 @@ class Pokemon(models.Model):
 
 class PokemonEntity(models.Model):
     pokemon = models.ForeignKey(
-        Pokemon, on_delete=models.CASCADE, related_name='pokemon_entities'
+        Pokemon,
+        on_delete=models.CASCADE,
+        related_name='pokemon_entities',
+        verbose_name='Покемон',
     )
     latitude = models.FloatField()
     longitude = models.FloatField()
     appeared_at = models.DateTimeField(default=timezone.now)
     disappeared_at = models.DateTimeField(default=timezone.now)
     level = models.IntegerField(
-        null=True, blank=True, validators=[MinValueValidator(1), MaxValueValidator(80)]
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(1), MaxValueValidator(80)],
+        verbose_name='Уровень',
     )
     health = models.IntegerField(
-        null=True, blank=True, validators=[MinValueValidator(1), MaxValueValidator(100)]
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(1), MaxValueValidator(100)],
+        verbose_name='Здоровье',
     )
     strength = models.IntegerField(
-        null=True, blank=True, validators=[MinValueValidator(1), MaxValueValidator(100)]
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(1), MaxValueValidator(100)],
+        verbose_name='Сила',
     )
     defense = models.IntegerField(
-        null=True, blank=True, validators=[MinValueValidator(1), MaxValueValidator(100)]
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(1), MaxValueValidator(100)],
+        verbose_name='Защита',
     )
     stamina = models.IntegerField(
-        null=True, blank=True, validators=[MinValueValidator(1), MaxValueValidator(100)]
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(1), MaxValueValidator(100)],
+        verbose_name='Выносливость',
     )
 
     def __str__(self):

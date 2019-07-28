@@ -17,8 +17,7 @@ def add_pokemon(folium_map, lat, lon, name, image_url=DEFAULT_IMAGE_URL):
 
 def build_pokemon_image_url(request, pokemon):
     image_url = 'http://{}/{}'.format(
-        request.get_host().strip('/'),
-        str(pokemon.image.url).strip('/')
+        request.get_host().strip('/'), str(pokemon.image.url).strip('/')
     )
 
     return image_url
@@ -92,6 +91,24 @@ def show_pokemon(request, pokemon_id):
         'description': pokemon.description,
         'img_url': pokemon.image.url if pokemon.image else DEFAULT_IMAGE_URL,
     }
+
+    if pokemon.previous_evolution:
+        pokemon_repr['previous_evolution'] = {
+            'pokemon_id': pokemon.previous_evolution.id,
+            'title_ru': pokemon.previous_evolution.title_ru,
+            'img_url': pokemon.previous_evolution.image.url
+            if pokemon.previous_evolution.image
+            else DEFAULT_IMAGE_URL,
+        }
+
+    if pokemon.next_evolution:
+        pokemon_repr['next_evolution'] = {
+            'pokemon_id': pokemon.next_evolution.id,
+            'title_ru': pokemon.next_evolution.title_ru,
+            'img_url': pokemon.next_evolution.image.url
+            if pokemon.next_evolution.image
+            else DEFAULT_IMAGE_URL,
+        }
 
     return render(
         request,
