@@ -1,7 +1,6 @@
 import folium
-import json
 
-from django.http import HttpResponseNotFound, Http404
+from django.http import HttpResponseNotFound
 from django.shortcuts import render
 
 from .models import Pokemon, PokemonEntity
@@ -65,7 +64,9 @@ def show_pokemon(request, pokemon_id):
     except Pokemon.DoesNotExist:
         return HttpResponseNotFound('<h1>Pokemon not found</h1>')
 
-    pokemon_entities = PokemonEntity.objects.filter(pokemon_id=pokemon_id)
+    pokemon_entities = PokemonEntity.objects.filter(
+        pokemon_id=pokemon_id
+    ).select_related()
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
 

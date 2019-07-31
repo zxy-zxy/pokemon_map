@@ -11,27 +11,27 @@ def pokemon_directory_path(instance, filename):
 class Pokemon(models.Model):
     title_ru = models.CharField(max_length=200, verbose_name='Заголовок на русском')
     title_en = models.CharField(
-        max_length=200, blank=True, null=True, verbose_name='Заголовок на английском'
+        max_length=200, blank=True, verbose_name='Заголовок на английском'
     )
     title_jp = models.CharField(
-        max_length=200, blank=True, null=True, verbose_name='Заголовок на японском'
+        max_length=200, blank=True, verbose_name='Заголовок на японском'
     )
     image = models.ImageField(blank=True, null=True, upload_to=pokemon_directory_path)
-    description = models.TextField(blank=True, null=True, verbose_name='Описание')
+    description = models.TextField(blank=True, verbose_name='Описание')
     previous_evolution = models.ForeignKey(
         'self',
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         blank=True,
         null=True,
-        related_name='pokemon_previous_evolution',
+        related_name='+',
         verbose_name='Из кого эволюционировал',
     )
     next_evolution = models.ForeignKey(
         'self',
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         blank=True,
         null=True,
-        related_name='pokemon_next_evolution',
+        related_name='+',
         verbose_name='В кого эволюционирует',
     )
 
